@@ -1,0 +1,15 @@
+{
+  "name": "readdate",
+  "description": "convert date to human readable format",
+  "version": "0.0.1",
+  "engines"    : { "node": "6.x"},
+  "main": "readdate.js",
+  "author": "4apaev",
+  "repository": "git@github.com:4apaev/readdate.git",
+  "scripts": {
+    "test" : "mocha test.js"
+  },
+  "devDependencies": {
+    "mocha": "latest"
+  }
+}

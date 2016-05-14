@@ -1,0 +1,4 @@
+git st
+node_modules
+.idea
+*.log
