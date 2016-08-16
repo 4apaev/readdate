@@ -1,19 +1,21 @@
 'use strict';
 
-let units = { years: 31536000000, months: 2628000000, days: 86400000, hours: 3600000, minutes: 60000, seconds: 1000, milliseconds: 1 };
-let ks = 'years,months,days,hours,minutes,seconds,milliseconds'.split(',');
-let sanitize = (u,x) => `${x} ${x < 2 ? u.slice(0, -1) : u}`;
+const Units = { year: 31536000000, month: 2628000000, day: 86400000, hour: 3600000, minute: 60000, second: 1000, millisecond: 1 }
+const keys = Object.keys(Units).sort((a,b) => Units[b] - Units[a]);
 
-module.exports = convert;
-
-function convert(x, u='years', buf=[]) {
-  if (u in units) {
-    let n = x/units[u];
-    let left = ~~n;
-    let right = (x - (units[u]*left));
-    left && buf.push(sanitize(u, left));
-    if(right)
-      return convert(right, ks[ks.indexOf(u)+1], buf);
-  }
-  return buf.join(', ');
+const sanitize = (unit, value) => `${ value } ${ unit }${ value > 1 ? 's' : '' }`;
+const round = (unit, time) => {
+  let head = ~~(time/unit);
+  let tail = time - (unit * head);
+  return { head, tail }
 }
+
+module.exports = (x, ...units) => convert(x, [], ...(units.length ? units : keys));
+
+function convert(time, buf, ...units) {
+    let [ unit, ...rest ] = units;
+    let { head, tail } = round(Units[unit], time);
+    head && buf.push(sanitize(unit, head));
+    return tail ? convert(tail, buf, ...rest) : buf.join(', ');
+  }
+
